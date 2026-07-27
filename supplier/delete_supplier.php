@@ -3,7 +3,8 @@ session_start();
 require_once '../config.php';
 
 // Proteksi halaman
-if (!isset($_SESSION['jabatan']) || $_SESSION['jabatan'] != 'Inventory & Purchasing Officer') {
+$jabatan_lower = strtolower(trim($_SESSION['jabatan'] ?? ''));
+if (!isset($_SESSION['jabatan']) || !in_array($jabatan_lower, ['inventory & purchasing officer', 'administrator', 'admin'])) {
     header('Location: ../login.php');
     exit();
 }

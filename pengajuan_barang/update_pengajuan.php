@@ -3,7 +3,8 @@ session_start();
 require_once '../config.php';
 
 // Proteksi halaman
-if (!isset($_SESSION['jabatan']) || $_SESSION['jabatan'] != 'Inventory & Purchasing Officer') {
+$jabatan_lower = strtolower(trim($_SESSION['jabatan'] ?? ''));
+if (!isset($_SESSION['jabatan']) || !in_array($jabatan_lower, ['inventory & purchasing officer', 'administrator', 'admin'])) {
     header('Location: ../login.php');
     exit();
 }
@@ -28,7 +29,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         header("Location: pengajuan_barang.php?status=success_update");
         exit();
     } else {
-        // Jika tidak ada baris yang terpengaruh, kemungkinan statusnya sudah berubah.
         header("Location: pengajuan_barang.php?status=error_approved");
         exit();
     }
@@ -46,8 +46,19 @@ if (!$pengajuan || $pengajuan['status_pengajuan'] != 'Diajukan') {
     exit();
 }
 
+// Ambil data supplier untuk pengajuan ini secara server-side
+$supplier_info = null;
+if (!empty($pengajuan['id_supplier'])) {
+    $stmt_supp = $conn->prepare("SELECT id_supplier, nama_supplier FROM supplier WHERE id_supplier = ?");
+    $stmt_supp->bind_param("s", $pengajuan['id_supplier']);
+    $stmt_supp->execute();
+    $supplier_info = $stmt_supp->get_result()->fetch_assoc();
+    $stmt_supp->close();
+}
+
 // Ambil daftar barang untuk dropdown
 $barangs = $conn->query("SELECT id_barang, produk, merek FROM barang ORDER BY produk");
+$selected_brg_id = strtolower(trim($pengajuan['id_barang'] ?? ''));
 ?>
 <!DOCTYPE html>
 <html lang="id">
@@ -103,14 +114,16 @@ $barangs = $conn->query("SELECT id_barang, produk, merek FROM barang ORDER BY pr
         <main class="content">
             <div class="form-container">
                 <h2 class="dashboard-title"><i class="fas fa-edit"></i> Ubah Pengajuan Barang</h2>
-                <form action="update_pengajuan.php?id=<?php echo $id_pengajuan; ?>" method="POST">
-                    <input type="hidden" name="id_pengajuan" value="<?php echo $pengajuan['id_pengajuan']; ?>">
+                <form action="update_pengajuan.php?id=<?php echo urlencode($id_pengajuan); ?>" method="POST">
+                    <input type="hidden" name="id_pengajuan" value="<?php echo htmlspecialchars($pengajuan['id_pengajuan']); ?>">
                     <div class="form-group">
                         <label for="id_barang">Pilih Barang</label>
                         <select id="id_barang" name="id_barang" required>
                             <option value="">-- Pilih Barang --</option>
-                            <?php while($row = $barangs->fetch_assoc()): ?>
-                                <option value="<?php echo $row['id_barang']; ?>" <?php echo ($row['id_barang'] == $pengajuan['id_barang']) ? 'selected' : ''; ?>>
+                            <?php while($row = $barangs->fetch_assoc()): 
+                                $curr_brg_id = strtolower(trim($row['id_barang'] ?? ''));
+                            ?>
+                                <option value="<?php echo htmlspecialchars($row['id_barang']); ?>" <?php echo ($curr_brg_id === $selected_brg_id) ? 'selected' : ''; ?>>
                                     <?php echo htmlspecialchars($row['produk'] . ' - ' . $row['merek']); ?>
                                 </option>
                             <?php endwhile; ?>
@@ -123,7 +136,11 @@ $barangs = $conn->query("SELECT id_barang, produk, merek FROM barang ORDER BY pr
                     <div class="form-group">
                         <label for="id_supplier">Supplier (Otomatis Terpilih)</label>
                         <select id="id_supplier" name="id_supplier" required>
-                            <option value="">-- Menunggu Barang Dipilih --</option>
+                            <?php if ($supplier_info): ?>
+                                <option value="<?php echo htmlspecialchars($supplier_info['id_supplier']); ?>" selected><?php echo htmlspecialchars($supplier_info['nama_supplier']); ?></option>
+                            <?php else: ?>
+                                <option value="">-- Menunggu Barang Dipilih --</option>
+                            <?php endif; ?>
                         </select>
                     </div>
                     <div class="button-group">
@@ -136,15 +153,20 @@ $barangs = $conn->query("SELECT id_barang, produk, merek FROM barang ORDER BY pr
     </div>
     <script src="../assets/js/main.js"></script>
     <script>
-    // Fungsi untuk memuat supplier berdasarkan barang yang dipilih
-    function loadSupplier(idBarang) {
+    // Memuat supplier berdasarkan barang yang dipilih
+    function loadSupplier(idBarang, preserveExisting) {
         const supplierSelect = document.getElementById('id_supplier');
         if (!idBarang) {
             supplierSelect.innerHTML = '<option value="">-- Menunggu Barang Dipilih --</option>';
             return;
         }
 
-        fetch('get_supplier_by_barang.php?id_barang=' + idBarang)
+        // Jika preserveExisting true dan sudah ada option terpilih (dari server-side PHP), jangan timpa!
+        if (preserveExisting && supplierSelect.value && supplierSelect.value !== "") {
+            return;
+        }
+
+        fetch('get_supplier_by_barang.php?id_barang=' + encodeURIComponent(idBarang))
             .then(response => response.json())
             .then(data => {
                 if (data.id_supplier) {
@@ -156,16 +178,17 @@ $barangs = $conn->query("SELECT id_barang, produk, merek FROM barang ORDER BY pr
             .catch(error => console.error('Error:', error));
     }
 
-    // Panggil fungsi saat halaman pertama kali dimuat dengan data yang sudah ada
+    // Panggil saat pertama kali dimuat dengan mempertahankan data server-side
     document.addEventListener('DOMContentLoaded', function() {
         const initialIdBarang = document.getElementById('id_barang').value;
-        loadSupplier(initialIdBarang);
+        loadSupplier(initialIdBarang, true);
     });
 
-    // Panggil fungsi setiap kali pilihan barang berubah
+    // Panggil saat barang diubah manual oleh pengguna
     document.getElementById('id_barang').addEventListener('change', function() {
-        loadSupplier(this.value);
+        loadSupplier(this.value, false);
     });
     </script>
 </body>
 </html>
+<?php $conn->close(); ?>

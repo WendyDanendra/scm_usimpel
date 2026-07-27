@@ -1,8 +1,9 @@
 <?php
 session_start();
 
-// Cek jika user belum login atau bukan jabatan yang sesuai
-if (!isset($_SESSION['jabatan']) || $_SESSION['jabatan'] != 'Inventory & Purchasing Officer') {
+// Proteksi halaman
+$jabatan_lower = strtolower(trim($_SESSION['jabatan'] ?? ''));
+if (!isset($_SESSION['jabatan']) || !in_array($jabatan_lower, ['inventory & purchasing officer', 'administrator', 'admin'])) {
     header('Location: ../login.php');
     exit();
 }

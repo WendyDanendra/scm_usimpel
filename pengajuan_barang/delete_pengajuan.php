@@ -2,8 +2,11 @@
 session_start();
 require_once '../config.php';
 
-if (!isset($_SESSION['jabatan']) || $_SESSION['jabatan'] != 'Inventory & Purchasing Officer') {
-    exit('Akses ditolak');
+// Proteksi halaman
+$jabatan_lower = strtolower(trim($_SESSION['jabatan'] ?? ''));
+if (!isset($_SESSION['jabatan']) || !in_array($jabatan_lower, ['inventory & purchasing officer', 'administrator', 'admin'])) {
+    header('Location: ../login.php');
+    exit();
 }
 
 $id_pengajuan = $_GET['id'] ?? 0;

@@ -2,8 +2,9 @@
 session_start();
 require_once '../config.php';
 
-// Proteksi halaman
-if (!isset($_SESSION['jabatan']) || $_SESSION['jabatan'] != 'Inventory & Purchasing Officer') {
+// Proteksi halaman - izinkan Inventory, Administrator, dan Admin
+$jabatan_lower = strtolower(trim($_SESSION['jabatan'] ?? ''));
+if (!isset($_SESSION['jabatan']) || !in_array($jabatan_lower, ['inventory & purchasing officer', 'administrator', 'admin'])) {
     header('Location: ../login.php');
     exit();
 }
@@ -14,12 +15,8 @@ if (!$id_barang) {
     exit();
 }
 
-// Ambil daftar supplier untuk dropdown
-$suppliers_result = $conn->query("SELECT id_supplier, nama_supplier FROM supplier ORDER BY nama_supplier");
-
 // Logika untuk UPDATE
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // ... (Logika update akan kita tambahkan setelah ini)
     $id_to_update = $_POST['id_barang'];
     $produk = $_POST['produk'];
     $merek = $_POST['merek'];
@@ -49,6 +46,10 @@ if (!$barang) {
     echo "Barang tidak ditemukan.";
     exit();
 }
+
+// Ambil daftar supplier untuk dropdown
+$suppliers_result = $conn->query("SELECT id_supplier, nama_supplier FROM supplier ORDER BY nama_supplier");
+$selected_supp_id = strtolower(trim($barang['id_supplier'] ?? ''));
 ?>
 <!DOCTYPE html>
 <html lang="id">
@@ -74,8 +75,8 @@ if (!$barang) {
             <div class="form-container">
                 <h2 class="dashboard-title"><i class="fas fa-edit"></i> Ubah Data Barang</h2>
                 <?php if (isset($error)): ?><p class="error-message"><?php echo $error; ?></p><?php endif; ?>
-                <form action="update_barang.php?id=<?php echo $id_barang; ?>" method="POST">
-                    <input type="hidden" name="id_barang" value="<?php echo $barang['id_barang']; ?>">
+                <form action="update_barang.php?id=<?php echo urlencode($id_barang); ?>" method="POST">
+                    <input type="hidden" name="id_barang" value="<?php echo htmlspecialchars($barang['id_barang']); ?>">
                     <div class="form-group">
                         <label>Nama Produk</label>
                         <input type="text" name="produk" value="<?php echo htmlspecialchars($barang['produk']); ?>" required>
@@ -99,8 +100,11 @@ if (!$barang) {
                     <div class="form-group">
                         <label>Supplier</label>
                         <select name="id_supplier" required>
-                            <?php while($supplier = $suppliers_result->fetch_assoc()): ?>
-                                <option value="<?php echo $supplier['id_supplier']; ?>" <?php echo ($supplier['id_supplier'] == $barang['id_supplier']) ? 'selected' : ''; ?>>
+                            <option value="">-- Pilih Supplier --</option>
+                            <?php while($supplier = $suppliers_result->fetch_assoc()): 
+                                $curr_supp_id = strtolower(trim($supplier['id_supplier'] ?? ''));
+                            ?>
+                                <option value="<?php echo htmlspecialchars($supplier['id_supplier']); ?>" <?php echo ($curr_supp_id === $selected_supp_id) ? 'selected' : ''; ?>>
                                     <?php echo htmlspecialchars($supplier['nama_supplier']); ?>
                                 </option>
                             <?php endwhile; ?>
@@ -115,3 +119,4 @@ if (!$barang) {
     <script src="../assets/js/main.js"></script>
 </body>
 </html>
+<?php $conn->close(); ?>
