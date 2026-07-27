@@ -57,8 +57,8 @@ if (!function_exists('getInitials')) {
             <i class="fas fa-chart-line"></i><span class="menu-text">Dashboard Overview</span>
         </a>
 
-        <?php // Menu untuk Administrator, Admin & Inventory & Purchasing Officer
-        if ($is_admin || $is_inventory) : ?>
+        <?php // Menu untuk Inventory & Purchasing Officer
+        if ($is_inventory) : ?>
             <div class="menu-item" data-menu="data-master">
                 <i class="fas fa-database"></i><span class="menu-text">Data Master</span><i class="fas fa-chevron-down chevron"></i>
             </div>
@@ -74,19 +74,23 @@ if (!function_exists('getInitials')) {
             <a href="<?= $base ?>stok_barang/pengelolaan_stok.php" class="menu-item"><i class="fas fa-warehouse"></i><span class="menu-text">Pengelolaan Stok</span></a>
         <?php endif; ?>
 
-        <?php // Menu untuk Administrator, Admin & Kepala Divisi
-        if ($is_admin || $is_kadiv) : ?>
+        <?php // Menu untuk Kepala Divisi Produk & Pengadaan
+        if ($is_kadiv) : ?>
             <a href="<?= $base ?>persetujuan/persetujuan_pengajuan.php" class="menu-item"><i class="fas fa-check-double"></i><span class="menu-text">Persetujuan Pengajuan</span></a>
         <?php endif; ?>
 
-        <?php // Menu untuk Administrator, Admin & Finance
-        if ($is_admin || $is_finance) : ?>
+        <?php // Menu untuk Finance & Billing Officer
+        if ($is_finance) : ?>
             <a href="<?= $base ?>pembayaran/pembayaran.php" class="menu-item"><i class="fas fa-money-bill-wave"></i><span class="menu-text">Proses Pembayaran</span></a>
         <?php endif; ?>
 
         <?php // Menu Kelola Pengguna untuk Admin dan semua role
         if ($is_admin || $is_inventory || $is_finance || $is_kadiv || $is_direktur || !empty($jabatan_raw)) : ?>
             <a href="<?= $base ?>user/user.php" class="menu-item"><i class="fas fa-users-cog"></i><span class="menu-text">Kelola Pengguna</span></a>
+        <?php endif; ?>
+
+        <?php // Menu Laporan untuk role selain Admin
+        if ($is_inventory || $is_finance || $is_kadiv || $is_direktur) : ?>
             <a href="<?= $base ?>laporan/laporan_scm.php" class="menu-item"><i class="fas fa-file-contract"></i><span class="menu-text">Laporan SCM</span></a>
         <?php endif; ?>
 
