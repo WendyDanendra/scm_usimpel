@@ -60,7 +60,7 @@ if (!function_exists('getInitials')) {
         <?php // Menu untuk Inventory & Purchasing Officer
         if ($is_inventory) : ?>
             <div class="menu-item" data-menu="data-master">
-                <i class="fas fa-database"></i><span class="menu-text">Data Master</span><i class="fas fa-chevron-down chevron"></i>
+                <i class="fas fa-database"></i><span class="menu-text">Katalog Barang & Data Supplier</span><i class="fas fa-chevron-down chevron"></i>
             </div>
             <div class="submenu" id="data-master">
                 <a href="<?= $base ?>supplier/supplier.php" class="submenu-item"><i class="fas fa-building"></i><span>Supplier</span></a>
