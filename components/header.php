@@ -4,6 +4,10 @@
         // Tentukan URL dashboard berdasarkan jabatan (sama seperti di sidebar)
         $dashboard_url = '/scm_usimpel/dashboard/';
         switch($jabatan) {
+            case 'Administrator':
+            case 'Admin':
+                $dashboard_url .= 'dashboard_admin.php';
+                break;
             case 'Inventory & Purchasing Officer':
                 $dashboard_url .= 'dashboard_inventory.php';
                 break;
@@ -17,7 +21,7 @@
                 $dashboard_url .= 'dashboard_direktur.php';
                 break;
             default:
-                $dashboard_url .= 'dashboard_inventory.php';
+                $dashboard_url .= 'dashboard_admin.php';
         }
         ?>
         <a href="<?= $dashboard_url ?>" style="color: inherit; text-decoration: none; display: flex; align-items: center; gap: 10px;" title="Kembali ke Dashboard">

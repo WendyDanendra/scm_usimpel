@@ -25,6 +25,10 @@ if (!function_exists('getInitials')) {
         // Tentukan URL dashboard berdasarkan jabatan
         $dashboard_url = '/scm_usimpel/dashboard/';
         switch($jabatan) {
+            case 'Administrator':
+            case 'Admin':
+                $dashboard_url .= 'dashboard_admin.php';
+                break;
             case 'Inventory & Purchasing Officer':
                 $dashboard_url .= 'dashboard_inventory.php';
                 break;
@@ -38,7 +42,7 @@ if (!function_exists('getInitials')) {
                 $dashboard_url .= 'dashboard_direktur.php';
                 break;
             default:
-                $dashboard_url .= 'dashboard_inventory.php';
+                $dashboard_url .= 'dashboard_admin.php';
         }
         ?>
         <a href="<?= $dashboard_url ?>" style="text-decoration: none; display: block;" title="Kembali ke Dashboard">
@@ -49,8 +53,8 @@ if (!function_exists('getInitials')) {
     
     <div class="sidebar-menu">
 
-        <?php // Menu untuk Inventory & Purchasing Officer
-        if ($jabatan == 'Inventory & Purchasing Officer') : ?>
+        <?php // Menu untuk Administrator, Admin & Inventory & Purchasing Officer
+        if (in_array($jabatan, ['Administrator', 'Admin', 'Inventory & Purchasing Officer'])) : ?>
             <div class="menu-item" data-menu="data-master">
                 <i class="fas fa-database"></i><span class="menu-text">Data Master</span><i class="fas fa-chevron-down chevron"></i>
             </div>
@@ -66,18 +70,23 @@ if (!function_exists('getInitials')) {
             <a href="/scm_usimpel/stok_barang/pengelolaan_stok.php" class="menu-item"><i class="fas fa-warehouse"></i><span class="menu-text">Pengelolaan Stok</span></a>
         <?php endif; ?>
 
-        <?php // Menu untuk Inventory & Kepala Divisi
-        if ($jabatan == 'Kepala Divisi Produk & Pengadaan') : ?>
+        <?php // Menu untuk Administrator, Admin & Kepala Divisi
+        if (in_array($jabatan, ['Administrator', 'Admin', 'Kepala Divisi Produk & Pengadaan'])) : ?>
             <a href="/scm_usimpel/persetujuan/persetujuan_pengajuan.php" class="menu-item"><i class="fas fa-check-double"></i><span class="menu-text">Persetujuan Pengajuan</span></a>
         <?php endif; ?>
 
-        <?php // --- MENU BARU UNTUK FINANCE ---
-        if ($jabatan == 'Finance & Billing Officer') : ?>
+        <?php // Menu untuk Administrator, Admin & Finance
+        if (in_array($jabatan, ['Administrator', 'Admin', 'Finance & Billing Officer'])) : ?>
             <a href="/scm_usimpel/pembayaran/pembayaran.php" class="menu-item"><i class="fas fa-money-bill-wave"></i><span class="menu-text">Proses Pembayaran</span></a>
         <?php endif; ?>
 
+        <?php // Menu Kelola Pengguna untuk Admin dan semua role
+        if (in_array($jabatan, ['Administrator', 'Admin', 'Inventory & Purchasing Officer', 'Finance & Billing Officer', 'Kepala Divisi Produk & Pengadaan', 'Direktur Operasional'])) : ?>
+            <a href="/scm_usimpel/user/user.php" class="menu-item"><i class="fas fa-users-cog"></i><span class="menu-text">Kelola Pengguna</span></a>
+        <?php endif; ?>
+
         <?php // Menu Laporan untuk semua
-        if (in_array($jabatan, ['Inventory & Purchasing Officer', 'Finance & Billing Officer', 'Kepala Divisi Produk & Pengadaan', 'Direktur Operasional'])) : ?>
+        if (in_array($jabatan, ['Administrator', 'Admin', 'Inventory & Purchasing Officer', 'Finance & Billing Officer', 'Kepala Divisi Produk & Pengadaan', 'Direktur Operasional'])) : ?>
              <a href="/scm_usimpel/laporan/laporan_scm.php" class="menu-item"><i class="fas fa-file-contract"></i><span class="menu-text">Laporan SCM</span></a>
         <?php endif; ?>
 

@@ -112,94 +112,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </style>
 </head>
 <body>
-    <!-- Toggle Button for Mobile -->
-    <button class="toggle-sidebar">
-        <i class="fas fa-bars"></i>
-    </button>
+    <?php include '../components/sidebar.php'; ?>
     
-    <!-- Sidebar (sama seperti sebelumnya) -->
-        <!-- Sidebar -->
-    <div class="sidebar">
-        <div class="logo-container">
-            <svg width="60" height="60" viewBox="0 0 60 60">
-                <circle cx="30" cy="30" r="28" fill="#3498db" />
-                <text x="30" y="35" text-anchor="middle" fill="white" font-size="10" font-weight="bold">UFILink</text>
-            </svg>
-            <h1 class="logo-text">PT. Usimpel Inovasi Indonesia</h1>
-        </div>
-        
-        <div class="sidebar-menu">
-            <!-- Data Master -->
-            <div class="menu-item" data-menu="data-master">
-                <i class="fas fa-database"></i>
-                <span class="menu-text">Data Master</span>
-                <i class="fas fa-chevron-down chevron"></i>
-            </div>
-            <div class="submenu" id="data-master">
-                <div class="submenu-item" onclick="window.location.href='./supplier.php'">
-                    <i class="fas fa-building"></i>
-                    <span>Supplier</span>
-                </div>
-                <div class="submenu-item" onclick="window.location.href='../barang/barang.php'">
-                    <i class="fas fa-box"></i>
-                    <span>Barang</span>
-                </div>
-            </div>
-            
-            <!-- Perhitungan ROP & Safety Stock -->
-            <div class="menu-item">
-                <i class="fas fa-calculator"></i>
-                <span class="menu-text">Perhitungan ROP & Safety Stock</span>
-            </div>
-            
-            <!-- Pengajuan Barang -->
-            <div class="menu-item">
-                <i class="fas fa-file-signature"></i>
-                <span class="menu-text" onclick="window.location.href='../pengajuan_barang/pengajuan_barang.php'">Pengajuan Barang</span>
-            </div>
-            
-            <!-- Pengadaan Barang -->
-            <div class="menu-item">
-                <i class="fas fa-truck-loading"></i>
-                <span class="menu-text">Pengadaan Barang</span>
-            </div>
-            
-            <!-- Pengelolaan Stok Barang -->
-            <div class="menu-item">
-                <i class="fas fa-warehouse"></i>
-                <span class="menu-text">Pengelolaan Stok Barang</span>
-            </div>
-            
-            <!-- Laporan SCM -->
-            <div class="menu-item">
-                <i class="fas fa-file-contract"></i>
-                <span class="menu-text">Laporan SCM</span>
-            </div>
-            
-            <!-- Logout -->
-            <div class="menu-item" onclick="window.location.href='../logout.php'">
-                <i class="fas fa-sign-out-alt"></i>
-                <span class="menu-text">Logout</span>
-            </div>
-        </div>
-    </div>
     <!-- Main Content -->
     <div class="main-content">
-        <!-- Header -->
-        <div class="header">
-            <div class="header-left">
-                <h2>Update Status Pengajuan</h2>
-            </div>
-            <div class="header-right">
-                <div class="user-profile">
-                    <div class="user-avatar"><?= substr($_SESSION['name'], 0, 1) ?></div>
-                    <div class="user-info">
-                        <div class="user-name"><?= $_SESSION['name'] ?></div>
-                        <div class="user-role"><?= $_SESSION['jabatan'] ?></div>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <?php include '../components/header.php'; ?>
         
         <!-- Content -->
         <div class="content">

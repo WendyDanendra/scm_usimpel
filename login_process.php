@@ -7,7 +7,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $password = $_POST['password'];
 
     // Query untuk mendapatkan data user
-    $query = "SELECT * FROM User WHERE username = '$username'";
+    $query = "SELECT * FROM user WHERE username = '$username'";
     $result = mysqli_query($conn, $query);
     $user = mysqli_fetch_assoc($result);
     
@@ -18,6 +18,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $_SESSION['jabatan'] = $user['jabatan']; // Simpan jabatan ke session
         // Pengalihan berdasarkan jabatan
         switch ($user['jabatan']) {
+            case 'Administrator':
+            case 'Admin':
+                header('Location: dashboard/dashboard_admin.php');
+                break;
             case 'Inventory & Purchasing Officer':
                 header('Location: dashboard/dashboard_inventory.php');
                 break;
@@ -31,7 +35,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 header('Location: dashboard/dashboard_direktur.php');
                 break;
             default:
-                header('Location: dashboard/dashboard_default.php'); // Jika jabatan tidak dikenali
+                header('Location: dashboard/dashboard_admin.php'); // Jika jabatan tidak dikenali / default admin
                 break;
         }
         exit();
