@@ -1,0 +1,47 @@
+/* assets/css/print.css */
+body {
+    background-color: white;
+    font-family: 'Times New Roman', Times, serif;
+    font-size: 12pt;
+    color: black;
+}
+
+.container {
+    width: 100%;
+    padding: 0;
+    margin: 0;
+}
+
+.report-header, .filter-section, .report-tabs, .report-actions, .no-print {
+    display: none !important; /* Sembunyikan semua yang tidak perlu */
+}
+
+.report-table, .report-table th, .report-table td {
+    border: 1px solid #666;
+    color: black;
+}
+
+.report-table th {
+    background-color: #f2f2f2 !important;
+}
+
+.report-footer {
+    page-break-inside: avoid; /* Hindari footer terpotong di tengah halaman */
+    margin-top: 50px;
+    padding-top: 30px;
+    border-top: 1px solid #ccc;
+    display: flex;
+    justify-content: space-around; /* Menyebar tanda tangan */
+}
+
+.signature {
+    text-align: center;
+    width: 220px;
+}
+
+.signature .line {
+    height: 1px;
+    background: #000;
+    margin-top: 70px; /* Jarak untuk tanda tangan */
+    margin-bottom: 5px;
+}
