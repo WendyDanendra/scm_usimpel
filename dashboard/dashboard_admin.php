@@ -28,7 +28,7 @@ $res_pengajuan = $conn->query("SELECT COUNT(*) as total FROM pengajuan_barang WH
 $total_pending_pengajuan = $res_pengajuan ? $res_pengajuan->fetch_assoc()['total'] : 0;
 
 // 5. Metric: Total Nominal Pembayaran Lunas
-$res_bayar = $conn->query("SELECT SUM(nominal_pembayaran) as total FROM pembayaran WHERE status_pembayaran = 'Lunas'");
+$res_bayar = $conn->query("SELECT SUM(nominal) as total FROM pembayaran WHERE status_pembayaran = 'Lunas'");
 $total_paid = $res_bayar ? ($res_bayar->fetch_assoc()['total'] ?? 0) : 0;
 
 // Recent Users
