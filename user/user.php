@@ -2,8 +2,9 @@
 session_start();
 require_once '../config.php';
 
-// Proteksi halaman - pastikan pengguna sudah login
-if (!isset($_SESSION['user_id'])) {
+// Proteksi halaman - hanya Administrator yang boleh mengakses
+$jabatan_lower = strtolower(trim($_SESSION['jabatan'] ?? ''));
+if (!isset($_SESSION['user_id']) || !in_array($jabatan_lower, ['admin', 'administrator'])) {
     header('Location: ../login.php');
     exit();
 }

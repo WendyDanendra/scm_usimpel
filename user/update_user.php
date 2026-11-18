@@ -2,7 +2,8 @@
 session_start();
 require_once '../config.php';
 
-if (!isset($_SESSION['user_id'])) {
+$jabatan_lower = strtolower(trim($_SESSION['jabatan'] ?? ''));
+if (!isset($_SESSION['user_id']) || !in_array($jabatan_lower, ['admin', 'administrator'])) {
     header('Location: ../login.php');
     exit();
 }

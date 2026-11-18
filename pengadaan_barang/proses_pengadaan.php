@@ -7,17 +7,37 @@ if ($_SESSION['jabatan'] != 'Inventory & Purchasing Officer') exit('Akses Ditola
 
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_FILES["file_invoice"])) {
     $id_pengajuan = $_POST['id_pengajuan'];
-    // ... (kode validasi dan upload file yang sama seperti sebelumnya) ...
+    
+    $file = $_FILES["file_invoice"];
+    $max_size = 5 * 1024 * 1024; // 5 MB
+    $allowed_types = ['image/jpeg', 'image/png', 'application/pdf'];
+    $allowed_exts = ['jpg', 'jpeg', 'png', 'pdf'];
+    $file_ext = strtolower(pathinfo($file["name"], PATHINFO_EXTENSION));
+
+    // Validasi ukuran
+    if ($file["size"] > $max_size) {
+        header("Location: pengadaan_barang.php?status=error_size");
+        exit();
+    }
+
+    // Validasi tipe file
+    if (!in_array($file_ext, $allowed_exts) || !in_array($file["type"], $allowed_types)) {
+        header("Location: pengadaan_barang.php?status=error_type");
+        exit();
+    }
+
     $target_dir = "../uploads/invoices/";
     if (!file_exists($target_dir)) mkdir($target_dir, 0777, true);
-    $file_name = time() . "_" . basename($_FILES["file_invoice"]["name"]);
+    // Sanitasi nama file: ganti spasi dengan underscore
+    $safe_name = preg_replace('/\s+/', '_', basename($file["name"]));
+    $file_name = time() . "_" . $safe_name;
     $target_file = $target_dir . $file_name;
-    if (move_uploaded_file($_FILES["file_invoice"]["tmp_name"], $target_file)) {
+
+    if (move_uploaded_file($file["tmp_name"], $target_file)) {
         // Generate ID baru
         $new_id = generate_id('PGDN', 'pengadaan_barang', 'id_pengadaan');
         
         $stmt_insert = $conn->prepare("INSERT INTO pengadaan_barang (id_pengadaan, id_pengajuan, tanggal_pengadaan, file_invoice, status_pengadaan) VALUES (?, ?, NOW(), ?, 'Invoice Diunggah')");
-        // Tipe data kedua ID 's'
         $stmt_insert->bind_param("sss", $new_id, $id_pengajuan, $file_name);
         
         if($stmt_insert->execute()){
@@ -37,4 +57,4 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_FILES["file_invoice"])) {
 } else {
     header("Location: pengadaan_barang.php");
 }
-?>
+?>

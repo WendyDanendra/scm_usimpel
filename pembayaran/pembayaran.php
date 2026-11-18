@@ -15,6 +15,10 @@ if (isset($_GET['status'])) {
         $status_message = '<div class="status-message success"><i class="fas fa-check-circle"></i> Bukti transfer berhasil diunggah dan pembayaran sedang menunggu kuitansi.</div>';
     } elseif ($_GET['status'] == 'receipt_success') {
         $status_message = '<div class="status-message success"><i class="fas fa-check-circle"></i> Kuitansi berhasil diunggah. Pembayaran telah selesai dan ditandai sebagai lunas.</div>';
+    } elseif ($_GET['status'] == 'error_size') {
+        $status_message = '<div class="status-message error"><i class="fas fa-exclamation-circle"></i> Gagal unggah! Ukuran file melebihi batas maksimal 5 MB.</div>';
+    } elseif ($_GET['status'] == 'error_type') {
+        $status_message = '<div class="status-message error"><i class="fas fa-exclamation-circle"></i> Gagal unggah! Format file tidak didukung. Gunakan format PDF, JPG, atau PNG.</div>';
     } elseif ($_GET['status'] == 'error') {
         $status_message = '<div class="status-message error"><i class="fas fa-exclamation-circle"></i> Terjadi kesalahan. Silakan coba lagi.</div>';
     }
@@ -193,7 +197,7 @@ $result = $conn->query($sql);
                                 <tr id="row_<?php echo $row["id_pengadaan"]; ?>">
                                     <td><?php echo $row["id_pengadaan"]; ?></td>
                                     <td><?php echo htmlspecialchars($row["produk"]); ?></td>
-                                    <td><a href="../uploads/invoices/<?php echo htmlspecialchars($row['file_invoice']); ?>" target="_blank" class="btn btn-view">Lihat</a></td>
+                                    <td><a href="../uploads/invoices/<?php echo rawurlencode(htmlspecialchars($row['file_invoice'])); ?>" target="_blank" class="btn btn-view">Lihat</a></td>
                                     <td><span class="status-badge <?php echo $status_class; ?>"><?php echo $status; ?></span></td>
                                     <td class="action-buttons">
                                         <?php if ($status == 'Belum Bayar' || $status == 'Menunggu Pembayaran' || $status == '' || is_null($status)): ?>
@@ -228,7 +232,7 @@ $result = $conn->query($sql);
                                                 // Gmail Compose URL
                                                 $gmail_link = "https://mail.google.com/mail/?view=cm&fs=1&to=" . urlencode($row['email_supplier']) . "&su=" . urlencode($subject) . "&body=" . urlencode($body);
                                             ?>
-                                            <a href="../uploads/transfers/<?php echo htmlspecialchars($row['file_bukti_transfer']); ?>" target="_blank" class="btn btn-view">📄 Lihat Bukti Transfer</a>
+                                            <a href="../uploads/transfers/<?php echo rawurlencode(htmlspecialchars($row['file_bukti_transfer'])); ?>" target="_blank" class="btn btn-view">📄 Lihat Bukti Transfer</a>
                                             <button 
                                                 class="btn btn-email email-btn" 
                                                 data-email="<?php echo htmlspecialchars($row['email_supplier']); ?>" 
@@ -246,8 +250,8 @@ $result = $conn->query($sql);
                                                 <button type="submit">✅ Tandai Lunas</button>
                                             </form>
                                         <?php else: ?>
-                                            <a href="../uploads/transfers/<?php echo htmlspecialchars($row['file_bukti_transfer']); ?>" target="_blank" class="btn btn-view">📄 Lihat Bukti Transfer</a>
-                                            <a href="../uploads/receipts/<?php echo htmlspecialchars($row['file_kuitansi']); ?>" target="_blank" class="btn btn-view">🧾 Lihat Kuitansi</a>
+                                            <a href="../uploads/transfers/<?php echo rawurlencode(htmlspecialchars($row['file_bukti_transfer'])); ?>" target="_blank" class="btn btn-view">📄 Lihat Bukti Transfer</a>
+                                            <a href="../uploads/receipts/<?php echo rawurlencode(htmlspecialchars($row['file_kuitansi'])); ?>" target="_blank" class="btn btn-view">🧾 Lihat Kuitansi</a>
                                         <?php endif; ?>
                                     </td>
                                 </tr>

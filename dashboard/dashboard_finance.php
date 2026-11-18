@@ -177,7 +177,7 @@ $total_nilai = $total_nilai ? $total_nilai->fetch_assoc() :
             left: 0;
             right: 0;
             height: 4px;
-            background: linear-gradient(90deg, #e74c3c, #c0392b);
+            background: linear-gradient(90deg, #667eea, #764ba2);
             border-radius: 20px 20px 0 0;
         }
         .stat-card.green::before {
@@ -223,7 +223,7 @@ $total_nilai = $total_nilai ? $total_nilai->fetch_assoc() :
             font-size: 3em;
             font-weight: 700;
             margin: 15px 0;
-            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            background: linear-gradient(135deg, #667eea, #764ba2);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -263,7 +263,7 @@ $total_nilai = $total_nilai ? $total_nilai->fetch_assoc() :
         }
         .stat-detail i {
             width: 16px;
-            color: #e74c3c;
+            color: #667eea;
         }
         .stat-detail.green i {
             color: #27ae60;
@@ -287,30 +287,6 @@ $total_nilai = $total_nilai ? $total_nilai->fetch_assoc() :
             height: 100%;
             transition: width 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
             background: linear-gradient(90deg, var(--progress-color-1), var(--progress-color-2));
-        }
-        .welcome-section {
-            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
-            color: white;
-            padding: 40px;
-            border-radius: 25px;
-            margin-bottom: 40px;
-            box-shadow: 0 20px 40px rgba(231, 76, 60, 0.3);
-            position: relative;
-            overflow: hidden;
-        }
-        .welcome-section::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            right: -50%;
-            width: 100%;
-            height: 100%;
-            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
-            animation: float 6s ease-in-out infinite;
-        }
-        @keyframes float {
-            0%, 100% { transform: translateY(0px) rotate(0deg); }
-            50% { transform: translateY(-20px) rotate(180deg); }
         }
         .quick-actions {
             display: grid;
@@ -363,7 +339,7 @@ $total_nilai = $total_nilai ? $total_nilai->fetch_assoc() :
             left: 0;
             width: 50px;
             height: 3px;
-            background: linear-gradient(90deg, #e74c3c, #c0392b);
+            background: linear-gradient(90deg, #667eea, #764ba2);
             border-radius: 2px;
         }
         .table-small {
@@ -374,7 +350,7 @@ $total_nilai = $total_nilai ? $total_nilai->fetch_assoc() :
             box-shadow: 0 10px 30px rgba(0,0,0,0.1);
         }
         .table-small th {
-            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            background: linear-gradient(135deg, #667eea, #764ba2);
             color: white;
             padding: 15px 12px;
             font-weight: 600;
@@ -388,7 +364,7 @@ $total_nilai = $total_nilai ? $total_nilai->fetch_assoc() :
             transition: background-color 0.3s ease;
         }
         .table-small tr:hover td {
-            background-color: #fff5f5;
+            background-color: #f8f9ff;
         }
         .status-badge {
             padding: 6px 12px;
@@ -489,7 +465,7 @@ $total_nilai = $total_nilai ? $total_nilai->fetch_assoc() :
             <!-- Statistik Cards -->
             <div class="dashboard-grid">
                 <!-- Statistik Pembayaran -->
-                <div class="stat-card" style="--icon-color-1: #e74c3c; --icon-color-2: #c0392b; --progress-color-1: #e74c3c; --progress-color-2: #c0392b;">
+                <div class="stat-card" style="--icon-color-1: #667eea; --icon-color-2: #764ba2; --progress-color-1: #667eea; --progress-color-2: #764ba2;">
                     <div class="stat-header">
                         <div>
                             <div class="stat-number"><?= $stats_pembayaran['total_pembayaran'] ?? 0 ?></div>

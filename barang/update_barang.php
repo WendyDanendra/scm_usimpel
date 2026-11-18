@@ -2,9 +2,9 @@
 session_start();
 require_once '../config.php';
 
-// Proteksi halaman - izinkan Inventory, Administrator, dan Admin
+// Proteksi halaman - izinkan Inventory
 $jabatan_lower = strtolower(trim($_SESSION['jabatan'] ?? ''));
-if (!isset($_SESSION['jabatan']) || !in_array($jabatan_lower, ['inventory & purchasing officer', 'administrator', 'admin'])) {
+if (!isset($_SESSION['jabatan']) || $jabatan_lower !== 'inventory & purchasing officer') {
     header('Location: ../login.php');
     exit();
 }

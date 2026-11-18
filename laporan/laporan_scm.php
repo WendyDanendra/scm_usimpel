@@ -23,14 +23,14 @@ $end_date = $_POST['end_date'] ?? date('Y-m-t');
 // Total Produk (tidak terikat tanggal)
 $total_produk = $conn->query("SELECT COUNT(id_barang) AS total FROM barang")->fetch_assoc()['total'] ?? 0;
 
-// Total Nilai Pengadaan pada periode terpilih
-$stmt_pengadaan = $conn->prepare("SELECT SUM(pb.jumlah_diajukan * b.harga) AS total FROM pengadaan_barang pd JOIN pengajuan_barang pb ON pd.id_pengajuan = pb.id_pengajuan JOIN barang b ON pb.id_barang = b.id_barang WHERE pd.tanggal_pengadaan BETWEEN ? AND ?");
+// Total Nilai Pengadaan pada periode terpilih (harga katalog × jumlah untuk semua pengadaan di periode ini)
+$stmt_pengadaan = $conn->prepare("SELECT COALESCE(SUM(pb.jumlah_diajukan * b.harga), 0) AS total FROM pengadaan_barang pd JOIN pengajuan_barang pb ON pd.id_pengajuan = pb.id_pengajuan JOIN barang b ON pb.id_barang = b.id_barang WHERE pd.tanggal_pengadaan BETWEEN ? AND ?");
 $stmt_pengadaan->bind_param("ss", $start_date, $end_date);
 $stmt_pengadaan->execute();
 $total_pengadaan = $stmt_pengadaan->get_result()->fetch_assoc()['total'] ?? 0;
 
-// Total Pengeluaran pada periode terpilih
-$stmt_pengeluaran = $conn->prepare("SELECT SUM(nominal) AS total FROM pembayaran WHERE tanggal_pembayaran BETWEEN ? AND ?");
+// Total Pengeluaran pada periode terpilih (nominal pembayaran untuk pengadaan yang SAMA)
+$stmt_pengeluaran = $conn->prepare("SELECT COALESCE(SUM(p.nominal), 0) AS total FROM pengadaan_barang pd JOIN pembayaran p ON pd.id_pengadaan = p.id_pengadaan WHERE pd.tanggal_pengadaan BETWEEN ? AND ?");
 $stmt_pengeluaran->bind_param("ss", $start_date, $end_date);
 $stmt_pengeluaran->execute();
 $total_pengeluaran = $stmt_pengeluaran->get_result()->fetch_assoc()['total'] ?? 0;
@@ -297,7 +297,7 @@ $laporan_pengeluaran = $stmt_lap_pengeluaran->get_result();
                                 <td><span class="status-badge"><?= htmlspecialchars($row['status_pembayaran']) ?></span></td>
                                 <td>
                                     <?php if (!empty($row['file_bukti_transfer'])): ?>
-                                        <a href="../uploads/transfers/<?= htmlspecialchars($row['file_bukti_transfer']) ?>" target="_blank" class="btn-view">
+                                        <a href="../uploads/transfers/<?= rawurlencode(htmlspecialchars($row['file_bukti_transfer'])) ?>" target="_blank" class="btn-view">
                                             <i class="fas fa-file-image"></i> Lihat
                                         </a>
                                     <?php else: ?>
@@ -306,7 +306,7 @@ $laporan_pengeluaran = $stmt_lap_pengeluaran->get_result();
                                 </td>
                                 <td>
                                     <?php if (!empty($row['file_kuitansi'])): ?>
-                                        <a href="../uploads/receipts/<?= htmlspecialchars($row['file_kuitansi']) ?>" target="_blank" class="btn-view">
+                                        <a href="../uploads/receipts/<?= rawurlencode(htmlspecialchars($row['file_kuitansi'])) ?>" target="_blank" class="btn-view">
                                             <i class="fas fa-receipt"></i> Lihat
                                         </a>
                                     <?php else: ?>

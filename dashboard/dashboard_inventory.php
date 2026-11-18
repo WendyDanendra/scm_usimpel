@@ -47,7 +47,7 @@ $stats_pengadaan = $result ? $result->fetch_assoc() :
 $result = $conn->query("
     SELECT 
         COUNT(*) as total_item_stok,
-        COALESCE(SUM(CAST(stok_tersedia AS UNSIGNED)), 0) as total_stok_tersedia
+        COALESCE(SUM(CASE WHEN stok_tersedia REGEXP '^[0-9]+$' THEN CAST(stok_tersedia AS UNSIGNED) ELSE 0 END), 0) as total_stok_tersedia
     FROM stok_barang
 ");
 $stats_stok = $result ? $result->fetch_assoc() : 
@@ -55,7 +55,7 @@ $stats_stok = $result ? $result->fetch_assoc() :
 
 // Barang Masuk dari log_stok
 $result = $conn->query("
-    SELECT COALESCE(SUM(CAST(jumlah AS UNSIGNED)), 0) as total_masuk 
+    SELECT COALESCE(SUM(CASE WHEN jumlah REGEXP '^[0-9]+$' THEN CAST(jumlah AS UNSIGNED) ELSE 0 END), 0) as total_masuk 
     FROM log_stok 
     WHERE jenis_log = 'masuk'
 ");
@@ -63,7 +63,7 @@ $barang_masuk = $result ? $result->fetch_assoc() : ['total_masuk' => 0];
 
 // Barang Keluar dari log_stok
 $result = $conn->query("
-    SELECT COALESCE(SUM(CAST(jumlah AS UNSIGNED)), 0) as total_keluar 
+    SELECT COALESCE(SUM(CASE WHEN jumlah REGEXP '^[0-9]+$' THEN CAST(jumlah AS UNSIGNED) ELSE 0 END), 0) as total_keluar 
     FROM log_stok 
     WHERE jenis_log = 'keluar'
 ");

@@ -8,13 +8,33 @@ if ($_SESSION['jabatan'] != 'Finance & Billing Officer') exit('Akses Ditolak.');
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_FILES["file_kuitansi"])) {
     $id_pembayaran = $_POST['id_pembayaran'];
 
+    $file = $_FILES["file_kuitansi"];
+    $max_size = 5 * 1024 * 1024; // 5 MB
+    $allowed_types = ['image/jpeg', 'image/png', 'application/pdf'];
+    $allowed_exts = ['jpg', 'jpeg', 'png', 'pdf'];
+    $file_ext = strtolower(pathinfo($file["name"], PATHINFO_EXTENSION));
+
+    // Validasi ukuran
+    if ($file["size"] > $max_size) {
+        header("Location: pembayaran.php?status=error_size");
+        exit();
+    }
+
+    // Validasi tipe file
+    if (!in_array($file_ext, $allowed_exts) || !in_array($file["type"], $allowed_types)) {
+        header("Location: pembayaran.php?status=error_type");
+        exit();
+    }
+
     // Proses upload kuitansi
     $target_dir = "../uploads/receipts/";
     if (!file_exists($target_dir)) mkdir($target_dir, 0777, true);
-    $file_name = time() . "_" . basename($_FILES["file_kuitansi"]["name"]);
+    // Sanitasi nama file: ganti spasi dengan underscore
+    $safe_name = preg_replace('/\s+/', '_', basename($file["name"]));
+    $file_name = time() . "_" . $safe_name;
     $target_file = $target_dir . $file_name;
 
-    if (move_uploaded_file($_FILES["file_kuitansi"]["tmp_name"], $target_file)) {
+    if (move_uploaded_file($file["tmp_name"], $target_file)) {
         $conn->begin_transaction();
         try {
             // Ambil id_pengadaan untuk anchor

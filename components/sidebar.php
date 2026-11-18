@@ -84,8 +84,8 @@ if (!function_exists('getInitials')) {
             <a href="<?= $base ?>pembayaran/pembayaran.php" class="menu-item"><i class="fas fa-money-bill-wave"></i><span class="menu-text">Proses Pembayaran</span></a>
         <?php endif; ?>
 
-        <?php // Menu Kelola Pengguna untuk Admin dan semua role
-        if ($is_admin || $is_inventory || $is_finance || $is_kadiv || $is_direktur || !empty($jabatan_raw)) : ?>
+        <?php // Menu Kelola Pengguna hanya untuk Administrator
+        if ($is_admin) : ?>
             <a href="<?= $base ?>user/user.php" class="menu-item"><i class="fas fa-users-cog"></i><span class="menu-text">Kelola Pengguna</span></a>
         <?php endif; ?>
 

@@ -100,7 +100,7 @@ $stmt_pembayaran = $conn->prepare("INSERT INTO pembayaran (id_pembayaran, id_pen
 
 foreach ($pengadaans as $p) {
     // Insert Pengajuan
-    $stmt_pengajuan->bind_param("ssisss", $p[0], $p[1], $p[2], $p[3], $p[4], $p[5]);
+    $stmt_pengajuan->bind_param("ssssss", $p[0], $p[1], $p[2], $p[3], $p[4], $p[5]);
     $stmt_pengajuan->execute();
     echo "   -> Pengajuan '$p[0]' dibuat.<br>";
 

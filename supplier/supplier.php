@@ -8,6 +8,8 @@ if (!isset($_SESSION['jabatan']) || !in_array($jabatan_lower, ['inventory & purc
     exit();
 }
 
+$is_inventory = ($jabatan_lower === 'inventory & purchasing officer');
+
 // Sertakan config database dan ambil data
 require_once '../config.php';
 $result = $conn->query("SELECT * FROM supplier ORDER BY id_supplier DESC");
@@ -117,7 +119,9 @@ if (isset($_GET['status'])) {
             <div class="table-container">
                 <div class="table-header">
                     <h2 class="dashboard-title" style="margin: 0;"><i class="fas fa-building"></i> Data Supplier</h2>
+                    <?php if ($is_inventory): ?>
                     <a href="create_supplier.php" class="btn-tambah"><i class="fas fa-plus"></i> Tambah Supplier</a>
+                    <?php endif; ?>
                 </div>
                 <?php echo $status_message; // TAMPILKAN PESAN DI SINI ?>
 
@@ -129,7 +133,9 @@ if (isset($_GET['status'])) {
                             <th>Alamat</th>
                             <th>Kontak</th>
                             <th>Email</th>
+                            <?php if ($is_inventory): ?>
                             <th>Aksi</th>
+                            <?php endif; ?>
                         </tr>
                     </thead>
                     <tbody>
@@ -141,10 +147,12 @@ if (isset($_GET['status'])) {
                                     <td><?php echo htmlspecialchars($row["alamat"]); ?></td>
                                     <td><?php echo htmlspecialchars($row["kontak"]); ?></td>
                                     <td><?php echo htmlspecialchars($row["email"]); ?></td>
+                                    <?php if ($is_inventory): ?>
                                     <td class="action-buttons">
                                         <a href="update_supplier.php?id=<?php echo $row["id_supplier"]; ?>" class="btn-edit" >Edit</a>
                                         <a href="delete_supplier.php?id=<?php echo $row["id_supplier"]; ?>" class="btn-delete" onclick="return confirm('Apakah Anda yakin ingin menghapus data ini?');">Hapus</a>
                                     </td>
+                                    <?php endif; ?>
                                 </tr>
                             <?php endwhile; ?>
                         <?php else: ?>

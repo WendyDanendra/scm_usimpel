@@ -22,6 +22,12 @@ if (isset($_GET['status'])) {
         case 'sent_to_finance':
             $status_message = '<div class="status-message success">Data berhasil dikirim ke tim Finance untuk proses pembayaran.</div>';
             break;
+        case 'error_size':
+            $status_message = '<div class="status-message error"><i class="fas fa-exclamation-circle"></i> Gagal unggah! Ukuran file melebihi batas maksimal 5 MB.</div>';
+            break;
+        case 'error_type':
+            $status_message = '<div class="status-message error"><i class="fas fa-exclamation-circle"></i> Gagal unggah! Format file tidak didukung. Gunakan format PDF, JPG, atau PNG.</div>';
+            break;
         case 'error':
             $status_message = '<div class="status-message error">Terjadi kesalahan. Silakan coba lagi.</div>';
             break;
@@ -248,14 +254,14 @@ $result = $conn->query($sql);
                                             <div style="text-align: center;">
                                                 <strong><?php echo date('d/m/Y', strtotime($row['tanggal_pembayaran'])); ?></strong><br>
                                                 <small style="color: var(--success);">Pembayaran Lunas</small><br>
-                                                <a href="../uploads/invoices/<?php echo htmlspecialchars($row['file_invoice']); ?>" target="_blank" class="btn btn-view" style="margin-top: 5px;">
+                                                <a href="../uploads/invoices/<?php echo rawurlencode(htmlspecialchars($row['file_invoice'])); ?>" target="_blank" class="btn btn-view" style="margin-top: 5px;">
                                                     <i class="fas fa-eye"></i> Lihat Invoice
                                                 </a>
                                             </div>
                                         <?php else: ?>
                                             <!-- View untuk pengadaan yang belum selesai (existing logic) -->
                                             <?php if ($row['status_pengajuan'] == 'Diproses'): ?>
-                                                <a href="../uploads/invoices/<?php echo htmlspecialchars($row['file_invoice']); ?>" target="_blank" class="btn btn-view">
+                                                <a href="../uploads/invoices/<?php echo rawurlencode(htmlspecialchars($row['file_invoice'])); ?>" target="_blank" class="btn btn-view">
                                                     <i class="fas fa-eye"></i> Lihat Invoice
                                                 </a>
                                             <?php elseif (is_null($row['file_invoice'])): ?>
@@ -274,7 +280,7 @@ $result = $conn->query($sql);
                                                     <i class="fas fa-upload"></i> Unggah Invoice
                                                 </button>
                                             <?php else: ?>
-                                                <a href="../uploads/invoices/<?php echo htmlspecialchars($row['file_invoice']); ?>" target="_blank" class="btn btn-view">
+                                                <a href="../uploads/invoices/<?php echo rawurlencode(htmlspecialchars($row['file_invoice'])); ?>" target="_blank" class="btn btn-view">
                                                     <i class="fas fa-eye"></i> Lihat Invoice
                                                 </a>
                                                 

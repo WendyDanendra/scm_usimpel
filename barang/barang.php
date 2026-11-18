@@ -9,6 +9,8 @@ if (!isset($_SESSION['jabatan']) || !in_array($jabatan_lower, ['inventory & purc
     exit();
 }
 
+$is_inventory = ($jabatan_lower === 'inventory & purchasing officer');
+
 // Logika untuk menampilkan pesan status
 $status_message = '';
 if (isset($_GET['status'])) {
@@ -68,7 +70,9 @@ $result = $conn->query($sql);
             <div class="table-container">
                 <div class="table-header">
                     <h2 class="dashboard-title" style="margin: 0;"><i class="fas fa-box"></i> Data Barang</h2>
+                    <?php if ($is_inventory): ?>
                     <a href="create_barang.php" class="btn-tambah"><i class="fas fa-plus"></i> Tambah Barang</a>
+                    <?php endif; ?>
                 </div>
                 <?php echo $status_message; ?>
                 <table class="data-table">
@@ -81,7 +85,9 @@ $result = $conn->query($sql);
                             <th>Harga</th>
                             <th>Lead Time (Hari)</th>
                             <th>Supplier</th>
+                            <?php if ($is_inventory): ?>
                             <th>Aksi</th>
+                            <?php endif; ?>
                         </tr>
                     </thead>
                     <tbody>
@@ -95,10 +101,12 @@ $result = $conn->query($sql);
                                     <td>Rp <?php echo number_format($row["harga"], 0, ',', '.'); ?></td>
                                     <td><?php echo htmlspecialchars($row["lead_time"]); ?></td>
                                     <td><?php echo htmlspecialchars($row["nama_supplier"] ?? 'N/A'); ?></td>
+                                    <?php if ($is_inventory): ?>
                                     <td class="action-buttons">
                                         <a href="update_barang.php?id=<?php echo $row["id_barang"]; ?>" class="btn-edit">Edit</a>
                                         <a href="delete_barang.php?id=<?php echo $row["id_barang"]; ?>" class="btn-delete" onclick="return confirm('Yakin ingin menghapus?');">Hapus</a>
                                     </td>
+                                    <?php endif; ?>
                                 </tr>
                             <?php endwhile; ?>
                         <?php else: ?>
